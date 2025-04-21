@@ -23,7 +23,7 @@ const ServiceCard = ({ icon: Icon, title, description, slug }: {
     >
       <div className="p-8">
         <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
-          <Icon className="text-2xl text-primary h-6 w-6" />
+          {Icon && <Icon className="text-2xl text-primary h-6 w-6" />}
         </div>
         <h3 className="text-xl font-semibold text-neutral-800 mb-3">{title}</h3>
         <p className="text-neutral-600 mb-6">

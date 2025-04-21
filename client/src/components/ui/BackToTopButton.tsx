@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ChevronUpIcon } from "lucide-react";
+import { ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const BackToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -15,6 +16,9 @@ const BackToTopButton = () => {
     };
 
     window.addEventListener("scroll", toggleVisibility);
+    
+    // Initial check
+    toggleVisibility();
 
     return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
@@ -28,15 +32,23 @@ const BackToTopButton = () => {
   };
 
   return (
-    <button
-      onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 bg-primary hover:bg-primary/90 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-      }`}
-      aria-label="Back to top"
-    >
-      <ChevronUpIcon className="h-6 w-6" />
-    </button>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 bg-primary hover:bg-primary/90 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg z-50"
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.3 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          aria-label="Back to top"
+        >
+          <ChevronUp className="h-6 w-6" />
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 };
 
