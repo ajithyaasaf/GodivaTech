@@ -1,0 +1,100 @@
+Prompt for AI Agent to Build Expert-Level Animated Website for GodivaTech
+You are tasked with creating an expert-level, highly animated website for GodivaTech, a technology company offering software solutions, IT consulting, cloud services, and related tech services. The website must showcase the company's expertise, attract potential clients, and provide valuable content through a blog. It should feature advanced animations, a premium design, and be optimized for search engines (SEO) to ensure maximum visibility and engagement.
+Website Structure
+Home Page
+
+Animated Hero Section: Create a full-screen hero with a dynamic headline (e.g., "Empowering Your Future with Innovative Tech") that fades in, a subheadline with a typing effect, and a pulsating CTA button (e.g., "Discover Solutions"). Include a subtle background animation (e.g., particle effects or gradient shifts).
+Services Overview: Display three to four services (e.g., Software Development, IT Consulting, Cloud Solutions) with animated cards that slide in on scroll, featuring hover effects (e.g., scale-up, shadow lift).
+Testimonials: Showcase client testimonials with a carousel that transitions smoothly, with quotes fading in and out.
+Featured Blog Posts: Highlight two to three recent posts with animated thumbnails that zoom slightly on hover and slide in on scroll.
+CTA Section: Include an animated CTA section with a button that pulses or changes color on hover, encouraging contact or newsletter signup.
+
+About Page
+
+Company History: Present a timeline of the company’s history with scroll-triggered animations (e.g., milestones fading in or sliding from the side).
+Team Profiles: Display team member cards with hover animations (e.g., image zoom, role text reveal) and load-in transitions.
+Values and Culture: Animate value icons or text to appear sequentially as the user scrolls.
+Awards: Showcase awards with a subtle bounce-in effect on page load.
+
+Services Page
+
+Service List: Create sections or subpages for each service with animated headers that fade in and icons that spin or scale on hover.
+Details: Animate service descriptions to slide in from the left or right on scroll.
+Case Studies: Present case studies with interactive cards that flip or expand on click to reveal more details.
+
+Portfolio/Projects Page
+
+Project Showcase: Display projects in a grid with hover effects (e.g., overlay fade, title slide-up) and load-in animations (e.g., staggered fade-in).
+Visuals: Use animated image galleries or sliders for project visuals.
+Client Info: Animate client logos to grayscale on load, transitioning to color on hover.
+
+Blog
+
+Content: Publish regular articles on tech trends, tutorials, or case studies with animated post previews (e.g., thumbnail zoom, title slide).
+Post Structure: Each post should have a unique title, meta description, relevant keywords, and categories/tags.
+Metadata: Include author info, publication date, and animated featured images that load with a fade-in effect.
+Engagement: Enable comments with a smooth slide-in form and social sharing buttons with hover animations.
+
+Contact Page
+
+Contact Form: Design an animated form with fields that highlight on focus and a submit button with a loading animation.
+Contact Info: Animate contact details (e.g., phone, email) to fade in sequentially.
+Map: Embed an interactive map (e.g., Google Maps API) with a zoom-in animation on load.
+Social Media: Display social icons with hover effects (e.g., rotate or color change).
+
+Design Requirements
+
+Aesthetic: Use a premium, modern design with a color palette of deep blue, gradient accents (e.g., blue-to-purple), and crisp white. Incorporate subtle metallic or neon accents for a futuristic feel.
+Responsiveness: Ensure the site is fully responsive across devices, with animations optimized for mobile performance.
+Performance: Compress images and use lightweight animation libraries (e.g., GSAP, Anime.js) to maintain fast load times.
+Visuals: Use high-resolution, tech-themed visuals (e.g., circuit patterns, abstract tech shapes) with parallax scrolling effects.
+Typography: Select elegant, modern fonts (e.g., Montserrat, Poppins) with animated text reveals for headings.
+Interactivity: Implement smooth transitions between pages, micro-interactions (e.g., button ripples), and scroll-triggered animations.
+
+Animation Requirements
+
+Hero Animations: Use fading, sliding, or typing effects for headlines and CTAs, with background particle or wave animations.
+Hover Effects: Apply scale, rotate, or shadow effects to buttons, cards, and images.
+Scroll Animations: Trigger animations (e.g., fade-in, slide-up) as elements enter the viewport, using libraries like AOS or GSAP.
+Loading Animations: Include a preloader with a tech-inspired animation (e.g., spinning circuit or progress bar).
+Transitions: Ensure smooth page transitions (e.g., fade or slide) for a seamless experience.
+Interactive Elements: Add animated toggles, sliders, or expandable sections for services and portfolio items.
+
+Advanced Features
+
+CMS Integration: Use a CMS (e.g., WordPress) with animation plugins for easy content updates.
+Newsletter: Include an animated subscription form with email marketing integration (e.g., Mailchimp).
+Live Chat: Implement a chatbot with an animated popup that slides in after a delay.
+Client Portal: Create a secure login area with an animated dashboard for client content or project updates.
+Social Media: Integrate animated social feeds (e.g., X or LinkedIn posts) that fade in or scroll dynamically.
+Search: Add an animated search bar with a magnifying glass icon that expands on click.
+
+SEO Optimization
+
+Headings: Use structured heading tags (H1, H2, etc.) with animated text reveals.
+Meta Tags: Include unique meta titles and descriptions for all pages and posts.
+Images: Add alt text to all images and optimize for fast loading without sacrificing animation quality.
+Code: Write clean, semantic HTML, CSS, and JavaScript, minifying files to improve performance.
+Sitemap: Generate an XML sitemap and robots.txt file.
+Internal Links: Implement an internal linking strategy with animated link underlines on hover.
+Schema Markup: Use structured data for rich snippets (e.g., services, reviews).
+Mobile-Friendly: Ensure animations are lightweight and responsive for mobile devices.
+Analytics: Set up Google Analytics and Search Console to track performance.
+
+Blog Specifics
+
+Organization: Create categories (e.g., Tech Trends, IT Solutions) and tags with animated category filters.
+Content Quality: Write engaging, keyword-optimized posts (e.g., targeting "software development services") with animated intros.
+Images: Use optimized featured images with fade-in or zoom animations.
+Sharing: Add animated social share buttons that pop or rotate on hover.
+Comments: Enable a commenting system with animated form submissions.
+Frequency: Publish at least one post per week to maintain SEO freshness.
+
+Additional Considerations
+
+Accessibility: Comply with WCAG guidelines, ensuring animations don’t hinder usability for disabled users.
+Security: Implement an SSL certificate and regular backups.
+Hosting: Use a high-performance hosting provider to support animated content.
+Testing: Test animations and responsiveness across browsers (Chrome, Firefox, Safari) and devices.
+
+By following these guidelines, you will create a visually stunning, highly animated, and SEO-optimized website for GodivaTech that captivates users, showcases expertise, and ranks well in search results.
