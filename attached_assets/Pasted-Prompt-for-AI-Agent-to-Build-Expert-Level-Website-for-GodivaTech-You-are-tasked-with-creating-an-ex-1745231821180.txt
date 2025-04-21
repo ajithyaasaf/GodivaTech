@@ -1,0 +1,91 @@
+Prompt for AI Agent to Build Expert-Level Website for GodivaTech
+You are tasked with creating an expert-level website for GodivaTech, a technology company offering software solutions, IT consulting, cloud services, and related tech services. The website must showcase the company's expertise, attract potential clients, and provide valuable content through a blog. It should be optimized for search engines (SEO) and include advanced features to enhance user experience.
+Website Structure
+Home Page
+
+Hero Section: Include a compelling headline (e.g., "Innovative Technology Solutions for Your Business"), a subheadline, and a prominent call-to-action (CTA) button (e.g., "Get Started").
+Services Overview: Display three to four main services (e.g., Software Development, IT Consulting, Cloud Solutions) with icons, brief descriptions, and links to detailed pages.
+Testimonials: Showcase client testimonials or success stories with quotes and client logos (if permitted).
+Featured Blog Posts: Highlight two to three recent blog posts with titles, images, and links.
+CTA Section: Include a CTA for contacting the company or subscribing to a newsletter.
+
+About Page
+
+Company History: Provide a brief history and mission statement (e.g., "Empowering businesses through innovative technology").
+Team Profiles: Include photos, names, roles, and short bios of key team members.
+Values and Culture: Outline company values (e.g., innovation, customer focus) and culture.
+Awards: List any awards or recognitions, if applicable.
+
+Services Page
+
+Service List: Create sections or subpages for each service (e.g., Software Development, IT Consulting, Cloud Solutions).
+Details: Include descriptions, benefits, and delivery methods for each service.
+Case Studies: Provide examples or case studies demonstrating successful projects, if possible.
+
+Portfolio/Projects Page
+
+Project Showcase: Display past projects with titles, descriptions, technologies used, and outcomes.
+Visuals: Include images or screenshots of projects.
+Client Info: List client names or logos (with permission).
+
+Blog
+
+Content: Regularly publish articles on technology trends, company insights, tutorials, or case studies.
+Post Structure: Each post should have a unique title, meta description, relevant keywords, and categories/tags.
+Metadata: Include author information, publication date, and featured images.
+Engagement: Enable comments and social sharing buttons.
+
+Contact Page
+
+Contact Form: Include fields for name, email, phone, and message.
+Contact Info: List company address, phone number, and email.
+Map: Integrate a map showing the company location (e.g., using Google Maps API).
+Social Media: Provide links to social media profiles.
+
+Design Requirements
+
+Aesthetic: Use a modern, professional design with a color scheme of blue and white (or similar tech-friendly palette).
+Responsiveness: Ensure compatibility across devices (desktops, tablets, smartphones).
+Performance: Optimize images and code for fast loading times.
+Visuals: Use high-quality images and graphics relevant to technology.
+Typography: Maintain consistent, readable fonts and branding.
+Interactivity: Incorporate hover effects, animations, or sliders for engagement.
+
+Advanced Features
+
+CMS Integration: Use a content management system (e.g., WordPress) for easy content updates.
+Newsletter: Include a subscription form with email marketing integration (e.g., Mailchimp).
+Live Chat: Implement a chatbot or live chat for real-time support.
+Client Portal: Create a login area for clients to access exclusive content or project updates.
+Social Media: Integrate feeds or APIs to display recent posts from platforms like X or LinkedIn.
+Search: Add a search bar for blog posts and site content.
+
+SEO Optimization
+
+Headings: Use proper heading tags (H1, H2, etc.) for content structure.
+Meta Tags: Include unique meta titles and descriptions for all pages and posts.
+Images: Add alt text to all images for accessibility and SEO.
+Code: Write clean, semantic HTML and CSS.
+Sitemap: Generate an XML sitemap and robots.txt file.
+Internal Links: Implement an internal linking strategy to enhance navigation and SEO.
+Schema Markup: Use structured data for rich snippets (e.g., reviews, services).
+Mobile-Friendly: Ensure the site is responsive and fast on mobile devices.
+Analytics: Set up Google Analytics and Search Console for performance tracking.
+
+Blog Specifics
+
+Organization: Create categories (e.g., Technology Trends, IT Solutions) and tags for posts.
+Content Quality: Write engaging, informative posts with targeted keywords (e.g., "cloud computing solutions").
+Images: Include optimized featured images with alt text.
+Sharing: Add social share buttons for platforms like X and LinkedIn.
+Comments: Enable a commenting system to foster engagement.
+Frequency: Publish at least one new post per week to maintain freshness.
+
+Additional Considerations
+
+Accessibility: Comply with WCAG guidelines for users with disabilities.
+Security: Implement an SSL certificate and regular backups.
+Hosting: Use a reliable hosting provider for uptime and performance.
+Testing: Test the site across browsers (Chrome, Firefox, Safari) and devices for compatibility.
+
+By following these guidelines, you will create a high-quality, expert-level website for GodivaTech that effectively communicates its value, attracts and retains clients, and ranks well in search engine results.
