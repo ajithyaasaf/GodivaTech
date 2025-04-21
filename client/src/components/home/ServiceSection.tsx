@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "wouter";
-import { ChevronRightIcon, CodeIcon, CloudIcon, UsersIcon, ShieldIcon, BarChartIcon, BrainCircuitIcon } from "lucide-react";
+import { ChevronRight, Code, Cloud, Users, Shield, BarChart, BrainCircuit } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useAnimateOnScroll, slideInUpVariants } from "@/hooks/use-animation";
@@ -33,7 +33,7 @@ const ServiceCard = ({ icon: Icon, title, description, slug }: {
           href={`/services/${slug}`} 
           className="text-primary font-medium hover:text-primary/90 transition duration-150 flex items-center"
         >
-          Learn More <ChevronRightIcon className="ml-2 h-4 w-4" />
+          Learn More <ChevronRight className="ml-2 h-4 w-4" />
         </Link>
       </div>
     </motion.div>
@@ -59,42 +59,42 @@ const ServiceSection = () => {
       id: 1,
       title: "Software Development",
       description: "Custom software solutions tailored to your business needs, from web applications to mobile apps and enterprise systems.",
-      icon: CodeIcon,
+      icon: Code,
       slug: "software-development"
     },
     {
       id: 2,
       title: "Cloud Solutions",
       description: "Scalable cloud infrastructure, migration services, and managed cloud solutions to optimize your business operations.",
-      icon: CloudIcon,
+      icon: Cloud,
       slug: "cloud-solutions"
     },
     {
       id: 3,
       title: "IT Consulting",
       description: "Strategic technology advisory services to help you make informed decisions and maximize your IT investments.",
-      icon: UsersIcon,
+      icon: Users,
       slug: "it-consulting"
     },
     {
       id: 4,
       title: "Cybersecurity",
       description: "Comprehensive security assessments, implementation, and monitoring to protect your business from evolving threats.",
-      icon: ShieldIcon,
+      icon: Shield,
       slug: "cybersecurity"
     },
     {
       id: 5,
       title: "Data Analytics",
       description: "Turn your data into actionable insights with our advanced analytics, business intelligence, and data visualization solutions.",
-      icon: BarChartIcon,
+      icon: BarChart,
       slug: "data-analytics"
     },
     {
       id: 6,
       title: "AI & Machine Learning",
       description: "Cutting-edge AI solutions that automate processes, predict trends, and enhance decision-making for your business.",
-      icon: BrainCircuitIcon,
+      icon: BrainCircuit,
       slug: "ai-machine-learning"
     }
   ];
@@ -127,7 +127,7 @@ const ServiceSection = () => {
           {displayServices.map((service: ServiceType, index: number) => (
             <ServiceCard 
               key={service.id || index}
-              icon={service.icon || CodeIcon}
+              icon={service.icon || Code}
               title={service.title}
               description={service.description}
               slug={service.slug}

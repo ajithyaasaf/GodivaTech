@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { useAnimateOnScroll, fadeInVariants } from "@/hooks/use-animation";
 
 interface Testimonial {
   id: number;
@@ -10,14 +12,42 @@ interface Testimonial {
   image: string;
 }
 
-const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
+const TestimonialCard = ({ testimonial, index }: { testimonial: Testimonial, index: number }) => {
+  const [ref, controls] = useAnimateOnScroll(0.1);
+  
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8 relative">
-      <div className="text-primary text-5xl absolute -top-4 -left-2">"</div>
+    <motion.div 
+      ref={ref}
+      initial="hidden"
+      animate={controls}
+      variants={fadeInVariants}
+      transition={{ delay: index * 0.2 }}
+      className="bg-white rounded-lg shadow-lg p-8 relative hover:shadow-xl transition-shadow duration-300"
+      whileHover={{ y: -5 }}
+    >
+      <motion.div 
+        className="text-primary text-5xl absolute -top-4 -left-2"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={controls}
+        variants={{
+          hidden: { opacity: 0, scale: 0 },
+          visible: { opacity: 1, scale: 1, transition: { delay: index * 0.2 + 0.3 } }
+        }}
+      >
+        "
+      </motion.div>
       <p className="text-neutral-600 mb-6 relative z-10">
         {testimonial.content}
       </p>
-      <div className="flex items-center">
+      <motion.div 
+        className="flex items-center"
+        initial={{ opacity: 0, x: -20 }}
+        animate={controls}
+        variants={{
+          hidden: { opacity: 0, x: -20 },
+          visible: { opacity: 1, x: 0, transition: { delay: index * 0.2 + 0.5 } }
+        }}
+      >
         <img
           src={testimonial.image}
           alt={testimonial.name}
@@ -27,8 +57,8 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
           <p className="font-semibold text-neutral-800">{testimonial.name}</p>
           <p className="text-neutral-500">{testimonial.position}, {testimonial.company}</p>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -67,21 +97,128 @@ const TestimonialsSection = () => {
 
   const displayTestimonials = testimonials.length > 0 ? testimonials : defaultTestimonials;
 
+  // Create carousel effect with auto-scroll
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  
+  useEffect(() => {
+    // Check screen size for responsive design
+    const checkScreenSize = () => {
+      setIsSmallScreen(window.innerWidth < 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Auto-scroll testimonials on larger screens
+    if (!isSmallScreen) {
+      const interval = setInterval(() => {
+        setCurrentTestimonialIndex((prev) => 
+          prev === displayTestimonials.length - 1 ? 0 : prev + 1
+        );
+      }, 5000);
+      
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('resize', checkScreenSize);
+      };
+    }
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [displayTestimonials.length, isSmallScreen]);
+  
+  // Animation variants for section heading
+  const headingVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6 }
+    }
+  };
+  
+  const textVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { duration: 0.6, delay: 0.2 }
+    }
+  };
+  
   return (
-    <section className="py-20 bg-neutral-50">
+    <section className="py-20 bg-neutral-50 overflow-hidden">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-neutral-800 mb-4">What Our Clients Say</h2>
-          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+          <motion.h2 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={headingVariants}
+            className="text-3xl font-bold text-neutral-800 mb-4"
+          >
+            What Our Clients Say
+          </motion.h2>
+          <motion.p 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={textVariants}
+            className="text-lg text-neutral-600 max-w-2xl mx-auto"
+          >
             Don't just take our word for it. Here's what our clients have to say about working with GodivaTech.
-          </p>
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayTestimonials.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </div>
+        {isSmallScreen ? (
+          // Grid layout for small screens
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayTestimonials.map((testimonial, index) => (
+              <TestimonialCard 
+                key={testimonial.id} 
+                testimonial={testimonial}
+                index={index}
+              />
+            ))}
+          </div>
+        ) : (
+          // Carousel for larger screens
+          <div 
+            ref={carouselRef} 
+            className="relative"
+          >
+            <div className="flex justify-center">
+              <motion.div
+                key={currentTestimonialIndex}
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.5 }}
+                className="w-full max-w-2xl"
+              >
+                <TestimonialCard 
+                  testimonial={displayTestimonials[currentTestimonialIndex]}
+                  index={0}
+                />
+              </motion.div>
+            </div>
+            
+            <div className="flex justify-center mt-8 space-x-2">
+              {displayTestimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentTestimonialIndex(index)}
+                  className={`w-3 h-3 rounded-full ${
+                    index === currentTestimonialIndex 
+                      ? 'bg-primary' 
+                      : 'bg-neutral-300 hover:bg-neutral-400'
+                  } transition-colors duration-300`}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
