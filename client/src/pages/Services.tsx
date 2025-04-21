@@ -1,14 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import ServiceSection from "@/components/home/ServiceSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 import CTASection from "@/components/home/CTASection";
+import PageTransition from "@/components/PageTransition";
 
 const Services = () => {
+  // Force smooth scroll to top when this page loads
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, []);
+  
   return (
-    <>
+    <PageTransition>
       <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
@@ -185,7 +195,7 @@ const Services = () => {
 
       <NewsletterSection />
       <CTASection />
-    </>
+    </PageTransition>
   );
 };
 

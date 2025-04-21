@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import ContactSection from "@/components/home/ContactSection";
 import MapSection from "@/components/home/MapSection";
+import PageTransition from "@/components/PageTransition";
 
 const Contact = () => {
+  // Force smooth scroll to top when this page loads
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, []);
+  
   return (
     <>
       <Helmet>
@@ -15,19 +25,21 @@ const Contact = () => {
         <meta name="keywords" content="contact GodivaTech, technology consulting, IT support, software development services" />
       </Helmet>
 
-      <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl font-bold mb-6">Get in Touch</h1>
-            <p className="text-xl text-white/90">
-              Have questions or ready to start your project? Contact our team today to discuss how we can help you achieve your business goals.
-            </p>
+      <PageTransition>
+        <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto">
+              <h1 className="text-4xl font-bold mb-6">Get in Touch</h1>
+              <p className="text-xl text-white/90">
+                Have questions or ready to start your project? Contact our team today to discuss how we can help you achieve your business goals.
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <ContactSection />
-      <MapSection />
+        <ContactSection />
+        <MapSection />
+      </PageTransition>
     </>
   );
 };
