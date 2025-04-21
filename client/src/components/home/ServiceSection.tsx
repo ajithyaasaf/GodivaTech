@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "wouter";
 import { ChevronRight, Code, Cloud, Users, Shield, BarChart, BrainCircuit } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useAnimateOnScroll, slideInUpVariants } from "@/hooks/use-animation";
+import ParallaxSection from "@/components/ui/ParallaxSection";
 
 const ServiceCard = ({ icon: Icon, title, description, slug }: { 
   icon: React.ElementType, 
