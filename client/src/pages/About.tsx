@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import TeamSection from "@/components/home/TeamSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
+import PageTransition from "@/components/PageTransition";
 
 const About = () => {
+  // Force scroll to top when this page loads
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
-    <>
+    <PageTransition>
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -85,7 +91,7 @@ const About = () => {
       <TeamSection />
       <TestimonialsSection />
       <CTASection />
-    </>
+    </PageTransition>
   );
 };
 

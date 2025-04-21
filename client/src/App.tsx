@@ -1,4 +1,5 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
+import { useEffect } from "react";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
@@ -9,9 +10,24 @@ import BlogPost from "@/pages/BlogPost";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 
+// Component to handle scroll to top on route change
+const ScrollToTop = () => {
+  const [location] = useLocation();
+  
+  useEffect(() => {
+    // Scroll to the top of the page whenever the location changes
+    window.scrollTo(0, 0);
+  }, [location]);
+  
+  return null;
+};
+
 function App() {
   return (
     <Layout>
+      {/* This component will automatically scroll to top when routes change */}
+      <ScrollToTop />
+      
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/about" component={About} />
