@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useAnimateOnScroll, fadeInVariants } from "@/hooks/use-animation";
+import ParallaxSection from "@/components/ui/ParallaxSection";
 
 interface Testimonial {
   id: number;
@@ -146,16 +147,109 @@ const TestimonialsSection = () => {
     }
   };
   
+  // Parallax effect for testimonials section
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Create wave effect animations
+  const wave1X = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
+  const wave2X = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+  const wave3X = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
+  
+  // Background gradient movement
+  const gradientPosition = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0% 0%", "100% 100%"]
+  );
+  
   return (
-    <section className="py-20 bg-neutral-50 overflow-hidden">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section 
+      ref={sectionRef} 
+      className="py-20 overflow-hidden relative"
+      style={{ minHeight: "600px" }}
+    >
+      {/* Animated background with parallax effect */}
+      <motion.div 
+        className="absolute inset-0 z-0" 
+        style={{
+          background: "linear-gradient(135deg, #2b5876 0%, #4e4376 100%)",
+          backgroundSize: "200% 200%",
+          backgroundPosition: gradientPosition
+        }}
+      />
+      
+      {/* Wave decorations with parallax effect */}
+      <motion.div 
+        className="absolute bottom-0 left-0 right-0 h-48 z-0 opacity-10"
+        style={{
+          backgroundImage: "url('https://cdn.pixabay.com/photo/2017/03/23/20/57/abstract-2169693_1280.png')",
+          backgroundRepeat: "repeat-x",
+          backgroundSize: "contain",
+          x: wave1X
+        }}
+      />
+      
+      <motion.div 
+        className="absolute bottom-0 left-0 right-0 h-32 z-0 opacity-15"
+        style={{
+          backgroundImage: "url('https://cdn.pixabay.com/photo/2017/03/23/20/57/abstract-2169693_1280.png')",
+          backgroundRepeat: "repeat-x",
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+          x: wave2X
+        }}
+      />
+      
+      <motion.div 
+        className="absolute bottom-10 left-0 right-0 h-24 z-0 opacity-20"
+        style={{
+          backgroundImage: "url('https://cdn.pixabay.com/photo/2017/03/23/20/57/abstract-2169693_1280.png')",
+          backgroundRepeat: "repeat-x",
+          backgroundSize: "contain",
+          backgroundPosition: "bottom",
+          x: wave3X
+        }}
+      />
+      
+      {/* Floating dots animation */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${Math.random() * 5 + 2}px`,
+              height: `${Math.random() * 5 + 2}px`,
+              opacity: Math.random() * 0.2 + 0.1,
+              y: useTransform(
+                scrollYProgress,
+                [0, 1],
+                [0, Math.random() * 100 * (Math.random() > 0.5 ? 1 : -1)]
+              )
+            }}
+          />
+        ))}
+      </div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          style={{
+            y: useTransform(scrollYProgress, [0, 0.3], ["50px", "0px"])
+          }}
+        >
           <motion.h2 
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={headingVariants}
-            className="text-3xl font-bold text-neutral-800 mb-4"
+            className="text-3xl font-bold text-white mb-4"
           >
             What Our Clients Say
           </motion.h2>
@@ -164,28 +258,45 @@ const TestimonialsSection = () => {
             whileInView="visible"
             viewport={{ once: true }}
             variants={textVariants}
-            className="text-lg text-neutral-600 max-w-2xl mx-auto"
+            className="text-lg text-white/90 max-w-2xl mx-auto"
           >
             Don't just take our word for it. Here's what our clients have to say about working with GodivaTech.
           </motion.p>
-        </div>
+        </motion.div>
 
         {isSmallScreen ? (
           // Grid layout for small screens
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayTestimonials.map((testimonial, index) => (
-              <TestimonialCard 
-                key={testimonial.id} 
-                testimonial={testimonial}
-                index={index}
-              />
+              <motion.div
+                key={testimonial.id}
+                style={{
+                  y: useTransform(
+                    scrollYProgress,
+                    [0, 1],
+                    [0, (index % 2 === 0 ? -20 : 20)]
+                  )
+                }}
+              >
+                <TestimonialCard 
+                  testimonial={testimonial}
+                  index={index}
+                />
+              </motion.div>
             ))}
           </div>
         ) : (
-          // Carousel for larger screens
-          <div 
+          // Carousel for larger screens with parallax effect
+          <motion.div 
             ref={carouselRef} 
             className="relative"
+            style={{
+              scale: useTransform(
+                scrollYProgress,
+                [0, 0.5, 1],
+                [0.9, 1, 0.95]
+              )
+            }}
           >
             <div className="flex justify-center">
               <motion.div
@@ -210,14 +321,14 @@ const TestimonialsSection = () => {
                   onClick={() => setCurrentTestimonialIndex(index)}
                   className={`w-3 h-3 rounded-full ${
                     index === currentTestimonialIndex 
-                      ? 'bg-primary' 
-                      : 'bg-neutral-300 hover:bg-neutral-400'
+                      ? 'bg-white' 
+                      : 'bg-white/50 hover:bg-white/70'
                   } transition-colors duration-300`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </section>

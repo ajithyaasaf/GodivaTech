@@ -102,37 +102,102 @@ const ServiceSection = () => {
 
   const displayServices: ServiceType[] = services.length > 0 ? services : defaultServices;
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Create different parallax effects for background elements
+  const leftCircleY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const rightCircleY = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 1, 1]);
+  const titleY = useTransform(scrollYProgress, [0, 0.2, 1], ["50px", "0px", "0px"]);
+  
   return (
-    <section id="services" className="py-20 bg-neutral-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section 
+      id="services" 
+      ref={sectionRef}
+      className="py-20 relative overflow-hidden"
+      style={{
+        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e8ee 100%)"
+      }}
+    >
+      {/* Decorative background elements with parallax effect */}
+      <motion.div 
+        className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-primary/5"
+        style={{ y: leftCircleY }}
+      />
+      <motion.div 
+        className="absolute bottom-20 -right-32 w-96 h-96 rounded-full bg-secondary/5"
+        style={{ y: rightCircleY }}
+      />
+      <motion.div 
+        className="absolute top-40 right-10 w-20 h-20 rounded-lg rotate-12 bg-primary/5"
+        style={{ 
+          rotate: useTransform(scrollYProgress, [0, 1], ["12deg", "45deg"]),
+          scale: useTransform(scrollYProgress, [0, 1], [1, 1.2])
+        }}
+      />
+      <motion.div 
+        className="absolute bottom-10 left-10 w-32 h-32 rounded-full bg-secondary/5"
+        style={{ 
+          scale: useTransform(scrollYProgress, [0, 1], [1, 1.5]),
+          x: useTransform(scrollYProgress, [0, 1], ["0px", "100px"])
+        }}
+      />
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div 
+          className="text-center mb-16"
+          style={{ 
+            opacity: titleOpacity,
+            y: titleY 
+          }}
+        >
           <motion.h2 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl font-bold text-neutral-800 mb-4"
+            className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4"
+            whileInView={{ 
+              opacity: [0, 1],
+              y: [-20, 0] 
+            }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
           >
             Our Services
           </motion.h2>
           <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg text-neutral-600 max-w-2xl mx-auto"
+            whileInView={{ 
+              opacity: [0, 1]
+            }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
           >
             We offer comprehensive technology solutions to help your business thrive in the digital landscape.
           </motion.p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayServices.map((service: ServiceType, index: number) => (
-            <ServiceCard 
+            <motion.div
               key={service.id || index}
-              icon={service.icon || Code}
-              title={service.title}
-              description={service.description}
-              slug={service.slug}
-            />
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ 
+                duration: 0.5, 
+                delay: 0.1 * index,
+                ease: "easeOut"
+              }}
+            >
+              <ServiceCard 
+                icon={service.icon || Code}
+                title={service.title}
+                description={service.description}
+                slug={service.slug}
+              />
+            </motion.div>
           ))}
         </div>
       </div>
