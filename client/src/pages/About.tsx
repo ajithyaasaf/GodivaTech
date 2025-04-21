@@ -8,9 +8,13 @@ import CTASection from "@/components/home/CTASection";
 import PageTransition from "@/components/PageTransition";
 
 const About = () => {
-  // Force scroll to top when this page loads
+  // Force smooth scroll to top when this page loads
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }, []);
   
   return (

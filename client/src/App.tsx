@@ -10,13 +10,17 @@ import BlogPost from "@/pages/BlogPost";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 
-// Component to handle scroll to top on route change
+// Component to handle smooth scroll to top on route change
 const ScrollToTop = () => {
   const [location] = useLocation();
   
   useEffect(() => {
-    // Scroll to the top of the page whenever the location changes
-    window.scrollTo(0, 0);
+    // Smooth scroll to the top of the page whenever the location changes
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }, [location]);
   
   return null;

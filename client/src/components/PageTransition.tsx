@@ -6,20 +6,47 @@ interface PageTransitionProps {
 }
 
 /**
- * Wraps page content with fade transitions and handles scroll restoration
+ * Wraps page content with smooth fade transitions and handles smooth scroll restoration
  */
 const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
-  // Scroll to top when this component mounts (page change)
+  // Smooth scroll to top when this component mounts (page change)
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
   }, []);
+
+  // Define advanced animations for smoother page transitions
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      y: 20
+    },
+    in: {
+      opacity: 1,
+      y: 0
+    },
+    out: {
+      opacity: 0,
+      y: -20
+    }
+  };
+  
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.5
+  };
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      initial="initial"
+      animate="in"
+      exit="out"
+      variants={pageVariants}
+      transition={pageTransition}
     >
       {children}
     </motion.div>

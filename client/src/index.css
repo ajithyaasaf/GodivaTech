@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  /* Global smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
   * {
     @apply border-border;
   }
