@@ -161,3 +161,78 @@ export function reportPerformanceMetrics(): void {
   // In the future, this could send metrics to an analytics service
   console.log('Performance metrics:', metrics);
 }
+
+/**
+ * Track long tasks and report them through a callback
+ */
+export function trackLongTasks(callback: (duration: number) => void): void {
+  if (typeof window === 'undefined' || !('PerformanceObserver' in window)) {
+    return;
+  }
+
+  try {
+    const longTaskObserver = new PerformanceObserver((entries) => {
+      entries.getEntries().forEach(entry => {
+        callback(entry.duration);
+      });
+    });
+    longTaskObserver.observe({ type: 'longtask', buffered: true });
+  } catch (e) {
+    console.warn('Long task tracking failed:', e);
+  }
+}
+
+/**
+ * Preload critical resources to improve loading performance
+ */
+export function preloadCriticalResources(resources: string[]): void {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  resources.forEach(resource => {
+    const link = document.createElement('link');
+    const extension = resource.split('.').pop()?.toLowerCase();
+    
+    link.rel = 'preload';
+    link.href = resource;
+    
+    // Set appropriate as attribute based on file extension
+    if (extension === 'css') {
+      link.as = 'style';
+    } else if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(extension || '')) {
+      link.as = 'image';
+    } else if (['woff', 'woff2', 'ttf', 'otf'].includes(extension || '')) {
+      link.as = 'font';
+      link.crossOrigin = 'anonymous';
+    } else if (['js'].includes(extension || '')) {
+      link.as = 'script';
+    }
+    
+    document.head.appendChild(link);
+  });
+}
+
+/**
+ * Initialize all performance optimizations
+ */
+export function initializePerformanceOptimizations(): void {
+  // Initialize performance monitoring
+  initPerformanceMonitoring();
+  
+  // Apply other performance optimizations
+  if (typeof window !== 'undefined') {
+    // Optimize image loading
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+      img.loading = 'lazy';
+      img.decoding = 'async';
+    });
+    
+    // Optimize script loading for third-party scripts
+    document.querySelectorAll('script[data-type="third-party"]').forEach(script => {
+      script.setAttribute('async', 'true');
+      script.setAttribute('defer', 'true');
+    });
+  }
+}

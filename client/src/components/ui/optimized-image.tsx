@@ -16,7 +16,7 @@ interface OptimizedImageProps {
  * for performance, including responsive sizing, appropriate loading
  * strategies, and format optimization
  */
-export function OptimizedImage({
+function OptimizedImage({
   src,
   alt,
   width,
@@ -77,3 +77,6 @@ export function OptimizedBackgroundImage({
     </div>
   );
 }
+
+export { OptimizedImage };
+export default OptimizedImage;

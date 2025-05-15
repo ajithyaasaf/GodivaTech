@@ -118,3 +118,67 @@ export function getImageFetchPriority(importance: 'high' | 'medium' | 'low'): 'h
     default: return 'auto';
   }
 }
+
+/**
+ * Sets up lazy loading for images across the site
+ */
+export function setupLazyLoading(): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return;
+  }
+  
+  // Use native lazy loading for browsers that support it
+  if ('loading' in HTMLImageElement.prototype) {
+    // Apply lazy loading to all images except those marked with data-priority="high"
+    document.querySelectorAll('img:not([data-priority="high"])').forEach(img => {
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+  } else {
+    // Fallback for browsers that don't support native lazy loading
+    // Load a lightweight lazy loading library if needed
+    // This is a simple implementation using Intersection Observer
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            if (img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+            }
+            imageObserver.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.01
+      });
+      
+      // Find all images with data-src attribute
+      document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+  }
+  
+  // Also optimize image loading for background images with data attributes
+  document.querySelectorAll('[data-background-image]').forEach(el => {
+    const bgImage = (el as HTMLElement).dataset.backgroundImage;
+    if (bgImage) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).style.backgroundImage = `url(${bgImage})`;
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.01
+      });
+      
+      observer.observe(el);
+    }
+  });
+}
