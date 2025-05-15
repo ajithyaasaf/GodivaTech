@@ -408,7 +408,7 @@ const ServiceSection: React.FC = () => {
                       decoding="async"
                       width="600"
                       height="400"
-                      fetchPriority="low"
+                      fetchpriority="low"
                       style={{ willChange: "opacity" }}
                     />
                     

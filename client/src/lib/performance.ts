@@ -3,6 +3,21 @@
  * Helps track and analyze performance metrics for the application
  */
 
+// Define more specific types for performance entries
+interface PerformanceEntryWithProcessingStart extends PerformanceEntry {
+  processingStart: number;
+}
+
+interface PerformanceResourceEntry extends PerformanceEntry {
+  initiatorType: string;
+  transferSize: number;
+}
+
+interface LayoutShiftEntry extends PerformanceEntry {
+  hadRecentInput: boolean;
+  value: number;
+}
+
 // Main performance metrics
 interface PerformanceMetrics {
   lcp: number | null; // Largest Contentful Paint
@@ -51,7 +66,7 @@ export function initPerformanceMonitoring(): void {
   // Monitor FID (First Input Delay)
   try {
     const fidObserver = new PerformanceObserver((entries) => {
-      const fidEntry = entries.getEntries()[0];
+      const fidEntry = entries.getEntries()[0] as PerformanceEntryWithProcessingStart;
       if (fidEntry) {
         const fid = fidEntry.processingStart - fidEntry.startTime;
         metrics.fid = fid;
@@ -66,15 +81,15 @@ export function initPerformanceMonitoring(): void {
   // Monitor CLS (Cumulative Layout Shift)
   try {
     let clsValue = 0;
-    let clsEntries: PerformanceEntry[] = [];
+    let clsEntries: LayoutShiftEntry[] = [];
     
     const clsObserver = new PerformanceObserver((entries) => {
       for (const entry of entries.getEntries()) {
         // Only count layout shifts without recent user input
-        if (!(entry as any).hadRecentInput) {
-          const currentEntry = entry as any;
-          clsValue += currentEntry.value;
-          clsEntries.push(currentEntry);
+        const layoutShiftEntry = entry as LayoutShiftEntry;
+        if (!layoutShiftEntry.hadRecentInput) {
+          clsValue += layoutShiftEntry.value;
+          clsEntries.push(layoutShiftEntry);
         }
       }
       
@@ -102,12 +117,15 @@ export function initPerformanceMonitoring(): void {
     window.addEventListener('load', () => {
       setTimeout(() => {
         const scripts = performance.getEntriesByType('resource')
-          .filter(resource => resource.initiatorType === 'script')
-          .map(entry => ({
-            name: entry.name.split('/').pop() || entry.name,
-            duration: entry.duration,
-            size: entry.transferSize,
-          }));
+          .filter(resource => (resource as PerformanceResourceEntry).initiatorType === 'script')
+          .map(entry => {
+            const resourceEntry = entry as PerformanceResourceEntry;
+            return {
+              name: entry.name.split('/').pop() || entry.name,
+              duration: entry.duration,
+              size: resourceEntry.transferSize,
+            };
+          });
 
         console.log('[Bundle Metrics] main-bundle:', {
           loadTime: scripts[0]?.duration || 0,

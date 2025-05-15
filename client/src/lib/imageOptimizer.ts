@@ -28,6 +28,18 @@ export function getOptimizedImageProps({
   className = '',
   fetchPriority = 'auto'
 }: OptimizedImageProps): React.ImgHTMLAttributes<HTMLImageElement> {
+  // Create a result object with correct DOM attribute keys
+  const result: any = {
+    src: '',
+    alt,
+    width,
+    height,
+    loading,
+    className,
+    // Use lowercase DOM attribute name
+    fetchpriority: fetchPriority
+  };
+
   // Handle Cloudinary-specific optimizations
   if (src && src.includes('cloudinary.com') && src.includes('/upload/')) {
     // Create multiple sizes for responsive images
@@ -48,40 +60,28 @@ export function getOptimizedImageProps({
       '/upload/c_scale,w_20,e_blur:500,q_30,f_auto/'
     );
 
-    return {
-      src: src.replace('/upload/', '/upload/q_auto,f_auto/'),
-      srcSet: srcset,
-      sizes,
-      alt,
-      width,
-      height,
-      loading,
-      className,
-      fetchPriority,
-      style: {
-        backgroundImage: `url(${lowQualityPreview})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      },
-      onLoad: (e) => {
-        // Remove background image once the full image loads
-        if (e.currentTarget) {
-          e.currentTarget.style.backgroundImage = 'none';
-        }
+    // Update result object with Cloudinary-specific values
+    result.src = src.replace('/upload/', '/upload/q_auto,f_auto/');
+    result.srcSet = srcset;
+    result.sizes = sizes;
+    result.style = {
+      backgroundImage: `url(${lowQualityPreview})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    };
+    result.onLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+      // Remove background image once the full image loads
+      if (e.currentTarget) {
+        e.currentTarget.style.backgroundImage = 'none';
       }
     };
+
+    return result;
   }
 
   // For regular images (non-Cloudinary)
-  return {
-    src,
-    alt,
-    width,
-    height,
-    loading,
-    className,
-    fetchPriority
-  };
+  result.src = src;
+  return result;
 }
 
 /**
