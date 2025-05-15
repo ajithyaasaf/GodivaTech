@@ -57,14 +57,14 @@ export function generateSizes(customSizes?: string): string {
 export function getImageLoadingAttrs(isPriority: boolean = false): {
   loading?: 'lazy' | 'eager';
   decoding?: 'async' | 'sync';
-  fetchPriority?: 'high' | 'low' | 'auto';
+  fetchpriority?: 'high' | 'low' | 'auto'; // Changed to lowercase for DOM attribute
 } {
   if (isPriority) {
     // For above-the-fold images, prioritize loading
     return {
       loading: 'eager',
       decoding: 'sync',
-      fetchPriority: 'high',
+      fetchpriority: 'high', // Changed to lowercase for DOM attribute
     };
   }
   
@@ -72,7 +72,7 @@ export function getImageLoadingAttrs(isPriority: boolean = false): {
   return {
     loading: 'lazy',
     decoding: 'async',
-    fetchPriority: 'low',
+    fetchpriority: 'low', // Changed to lowercase for DOM attribute
   };
 }
 

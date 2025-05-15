@@ -22,7 +22,7 @@ interface OptimizedImageProps {
  * - Sets proper width/height to prevent CLS
  * - Uses native lazy loading for offscreen images
  * - Implements proper decoding attributes
- * - Supports modern fetchPriority for browsers that support it
+ * - Supports modern fetchpriority for browsers that support it
  * - Creates placeholders for images to maintain layout before load
  * - Supports WebP/AVIF with fallbacks (when using imageUrl helper)
  */
@@ -82,6 +82,30 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     }
   }, [priority, src]);
   
+  // Create image attributes with proper DOM attribute names
+  const imgProps: any = {
+    src,
+    alt,
+    width,
+    height,
+    loading: imageLoading,
+    decoding,
+    sizes,
+    // Use lowercase DOM attribute name
+    fetchpriority: imageFetchPriority,
+    onLoad: handleLoad,
+    style: {
+      opacity: isLoaded ? 1 : 0,
+      transition: 'opacity 0.3s ease-in-out',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+    }
+  };
+  
   return (
     <div 
       className={`optimized-image-container ${className}`} 
@@ -93,27 +117,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
     >
       {/* Placeholder to maintain layout and prevent CLS */}
       <div style={placeholderStyle}>
-        <img
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          loading={imageLoading}
-          decoding={decoding}
-          sizes={sizes}
-          fetchPriority={imageFetchPriority as any}
-          onLoad={handleLoad}
-          style={{
-            opacity: isLoaded ? 1 : 0,
-            transition: 'opacity 0.3s ease-in-out',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
-        />
+        <img {...imgProps} />
       </div>
     </div>
   );
