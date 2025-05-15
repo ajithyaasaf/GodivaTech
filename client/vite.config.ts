@@ -23,5 +23,36 @@ export default defineConfig({
   build: {
     outDir: "dist",
     emptyOutDir: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui': [
+            '@radix-ui/react-accordion',
+            '@radix-ui/react-alert-dialog',
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-popover',
+            '@radix-ui/react-slot'
+          ],
+          'animations': ['framer-motion', 'gsap'],
+          'form': ['react-hook-form', 'zod', '@hookform/resolvers'],
+          'utils': ['clsx', 'tailwind-merge', 'date-fns']
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+      }
+    },
+    sourcemap: false,
+    cssCodeSplit: true,
+    assetsInlineLimit: 4096
   },
 });
