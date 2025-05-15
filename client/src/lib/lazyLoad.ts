@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import React, { lazy, Suspense } from 'react';
 import type { ComponentType, LazyExoticComponent } from 'react';
 
 /**
@@ -33,8 +33,8 @@ export function lazyLoadComponent<T extends ComponentType<any>>(
 export function withSuspense<T extends ComponentType<any>>(
   LazyComponent: LazyExoticComponent<T>,
   fallback: React.ReactNode = null
-) {
-  return (props: any) => (
+): (props: React.ComponentProps<T>) => JSX.Element {
+  return (props: React.ComponentProps<T>) => (
     <Suspense fallback={fallback}>
       <LazyComponent {...props} />
     </Suspense>
@@ -45,7 +45,7 @@ export function withSuspense<T extends ComponentType<any>>(
  * Utility to preload components when hovering over links
  * or when components are likely to be needed soon
  */
-export function preloadComponent(LazyComponent: LazyExoticComponent<any> & { preload?: () => Promise<any> }) {
+export function preloadComponent(LazyComponent: LazyExoticComponent<any> & { preload?: () => Promise<any> }): void {
   if (typeof LazyComponent.preload === 'function') {
     LazyComponent.preload().catch(() => {
       // Silently catch errors during preloading

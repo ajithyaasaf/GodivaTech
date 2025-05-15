@@ -1,73 +1,79 @@
-import React, { useState } from "react";
-import { cn } from "@/lib/utils";
-import { 
-  generateSrcSet, 
-  generateSizes, 
-  getImageLoadingAttrs, 
-  OptimizedImageProps 
-} from "@/lib/imageLazyLoading";
+import React from 'react';
+import { getOptimizedImageProps } from '@/lib/imageOptimizer';
+
+interface OptimizedImageProps {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  importance?: 'high' | 'medium' | 'low';
+  className?: string;
+}
 
 /**
- * Optimized Image Component
- * 
- * Features:
- * - Lazy loading for images below the fold
- * - Responsive images with srcSet and sizes
- * - Blur-up loading effect
- * - Proper loading attributes
+ * Optimized image component that automatically applies best practices
+ * for performance, including responsive sizing, appropriate loading
+ * strategies, and format optimization
  */
-const OptimizedImage: React.FC<OptimizedImageProps> = ({
+export function OptimizedImage({
   src,
   alt,
   width,
   height,
-  className,
-  priority = false,
-  sizes
-}) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  
-  // Generate responsive image attributes
-  const srcSet = generateSrcSet(src);
-  const sizeAttr = sizes || generateSizes();
-  const loadingAttrs = getImageLoadingAttrs(priority);
-  
+  sizes,
+  importance = 'medium',
+  className = '',
+}: OptimizedImageProps) {
+  const loading = importance === 'high' ? 'eager' : 'lazy';
+  const fetchPriority = importance === 'high' ? 'high' : importance === 'low' ? 'low' : 'auto';
+
+  const imageProps = getOptimizedImageProps({
+    src,
+    alt,
+    width,
+    height,
+    sizes,
+    loading,
+    className,
+    fetchPriority,
+  });
+
+  return <img {...imageProps} />;
+}
+
+/**
+ * Optimized background image component that applies a div with 
+ * background image and appropriate styles
+ */
+export function OptimizedBackgroundImage({
+  src,
+  alt,
+  children,
+  className = '',
+  style = {},
+}: {
+  src: string;
+  alt: string;
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  // Optimize the URL for Cloudinary if applicable
+  const optimizedSrc = src.includes('cloudinary.com') && src.includes('/upload/')
+    ? src.replace('/upload/', '/upload/q_auto,f_auto/')
+    : src;
+
+  const combinedStyle: React.CSSProperties = {
+    backgroundImage: `url(${optimizedSrc})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    ...style,
+  };
+
   return (
-    <div 
-      className={cn(
-        "overflow-hidden relative",
-        className
-      )}
-      style={{ 
-        backgroundColor: '#f9fafb',
-        // Do not enforce specific dimensions, let the parent container and className control that
-        aspectRatio: width && height ? `${width} / ${height}` : 'auto'
-      }}
-    >
-      <img
-        src={src}
-        alt={alt}
-        srcSet={srcSet}
-        sizes={sizeAttr}
-        width={width}
-        height={height}
-        onLoad={() => setIsLoaded(true)}
-        className={cn(
-          "w-full h-full transition-opacity duration-500",
-          isLoaded ? "opacity-100" : "opacity-0"
-        )}
-        {...loadingAttrs}
-      />
-      
-      {/* Super lightweight blur placeholder */}
-      {!isLoaded && (
-        <div 
-          className="absolute inset-0 bg-gray-200 animate-pulse"
-          aria-hidden="true"
-        />
-      )}
+    <div className={className} style={combinedStyle} role="img" aria-label={alt}>
+      {children}
     </div>
   );
-};
-
-export default OptimizedImage;
+}

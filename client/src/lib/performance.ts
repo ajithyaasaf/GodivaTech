@@ -1,230 +1,163 @@
 /**
- * Performance optimization utilities for Core Web Vitals
+ * Performance monitoring utilities
+ * Helps track and analyze performance metrics for the application
  */
 
-/**
- * Create an Intersection Observer for lazy loading
- * 
- * @param callback Function to call when elements intersect
- * @param options Configuration options for the observer
- * @returns IntersectionObserver instance
- */
-export function createLazyLoadObserver(
-  callback: IntersectionObserverCallback,
-  options: IntersectionObserverInit = {}
-): IntersectionObserver {
-  // Set default options for best performance
-  const defaultOptions: IntersectionObserverInit = {
-    rootMargin: '200px', // Start loading before element is visible
-    threshold: 0.1 // Trigger when at least 10% is visible
-  };
-  
-  // Merge with user-provided options
-  const mergedOptions = { ...defaultOptions, ...options };
-  
-  // Create and return the observer
-  return new IntersectionObserver(callback, mergedOptions);
+// Main performance metrics
+interface PerformanceMetrics {
+  lcp: number | null; // Largest Contentful Paint
+  fid: number | null; // First Input Delay
+  cls: number | null; // Cumulative Layout Shift
+  fcp: number | null; // First Contentful Paint
+  ttfb: number | null; // Time to First Byte
+  loadTime: number | null; // Page Load Time
 }
 
+// Initial empty metrics object
+const metrics: PerformanceMetrics = {
+  lcp: null,
+  fid: null,
+  cls: null,
+  fcp: null,
+  ttfb: null,
+  loadTime: null,
+};
+
 /**
- * Track long-running tasks that may cause poor user experience
- * This helps identify performance bottlenecks
- * 
- * @param callback Callback function that receives the duration of long tasks
- * @param threshold Minimum duration (ms) to consider a task as "long"
+ * Initialize performance monitoring
+ * Sets up observers for web vitals and logs them when they occur
  */
-export function trackLongTasks(callback: (duration: number) => void, threshold: number = 50) {
-  if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return;
-  
-  try {
-    const observer = new PerformanceObserver((list) => {
-      list.getEntries().forEach((entry) => {
-        // duration is in milliseconds
-        const duration = entry.duration;
-        
-        if (duration > threshold) {
-          callback(duration);
-        }
-      });
-    });
-    
-    observer.observe({ entryTypes: ['longtask'] });
-    
-    return () => {
-      observer.disconnect();
-    };
-  } catch (error) {
-    console.error('Error setting up long task observer:', error);
+export function initPerformanceMonitoring(): void {
+  if (typeof window === 'undefined' || !('PerformanceObserver' in window)) {
+    return;
   }
-}
 
-/**
- * Lazy load images that are not in the viewport
- * This helps improve Largest Contentful Paint (LCP) by prioritizing visible images
- * 
- * @param imageSelector CSS selector for images to lazy load
- */
-export function setupLazyLoading(imageSelector: string = 'img:not([loading])') {
-  if (typeof window === 'undefined') return;
-  
-  // Add loading="lazy" to images that don't already have it
-  const images = document.querySelectorAll<HTMLImageElement>(imageSelector);
-  images.forEach(img => {
-    if (!img.hasAttribute('loading')) {
-      img.loading = 'lazy';
-    }
-    
-    // Add decoding="async" for better performance
-    if (!img.hasAttribute('decoding')) {
-      img.decoding = 'async';
-    }
-  });
-}
-
-/**
- * Preload critical resources
- * This helps improve First Contentful Paint (FCP) and Largest Contentful Paint (LCP)
- * 
- * @param resources Array of URLs to preload
- * @param type Resource type (image, style, script, font)
- */
-export function preloadCriticalResources(resources: string[], type: 'image' | 'style' | 'script' | 'font' = 'image') {
-  if (typeof window === 'undefined') return;
-  
-  resources.forEach(url => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.href = url;
-    link.as = type;
-    
-    if (type === 'font') {
-      link.setAttribute('crossorigin', 'anonymous');
-    }
-    
-    document.head.appendChild(link);
-  });
-}
-
-/**
- * Optimize images on the page for better performance
- * This helps improve Largest Contentful Paint (LCP)
- */
-export function optimizeImages() {
-  if (typeof window === 'undefined') return;
-  
-  const images = document.querySelectorAll<HTMLImageElement>('img');
-  
-  images.forEach(img => {
-    // Skip images that are already optimized
-    if (img.getAttribute('data-optimized') === 'true') return;
-    
-    // Add width and height attributes to prevent layout shifts
-    if (img.width && img.height && !img.hasAttribute('width') && !img.hasAttribute('height')) {
-      img.setAttribute('width', img.width.toString());
-      img.setAttribute('height', img.height.toString());
-    }
-    
-    // Mark as optimized
-    img.setAttribute('data-optimized', 'true');
-  });
-}
-
-/**
- * Defer non-critical JavaScript
- * This helps improve Time to Interactive (TTI) and Total Blocking Time (TBT)
- * 
- * @param callback Function to defer
- * @param timeout Delay in milliseconds
- */
-export function deferNonCritical(callback: () => void, timeout: number = 1000) {
-  if (typeof window === 'undefined') return;
-  
-  if ('requestIdleCallback' in window) {
-    // Use requestIdleCallback when browser is idle
-    (window as any).requestIdleCallback(() => {
-      setTimeout(callback, 0);
-    });
-  } else {
-    // Fallback to setTimeout
-    setTimeout(callback, timeout);
-  }
-}
-
-/**
- * Register a performance observer to monitor Core Web Vitals metrics
- * This helps track LCP, FID, and CLS in production
- */
-export function monitorWebVitals() {
-  if (typeof window === 'undefined' || !('PerformanceObserver' in window)) return;
-  
+  // Monitor LCP (Largest Contentful Paint)
   try {
-    // LCP observer
-    const lcpObserver = new PerformanceObserver((entryList) => {
-      const entries = entryList.getEntries();
-      const lastEntry = entries[entries.length - 1];
-      console.log('LCP:', lastEntry.startTime);
+    const lcpObserver = new PerformanceObserver((entries) => {
+      const lcpEntry = entries.getEntries().at(-1);
+      if (lcpEntry) {
+        const lcp = lcpEntry.startTime;
+        metrics.lcp = lcp;
+        console.log('LCP:', lcp);
+        console.log(`LCP time: ${lcp}ms`);
+      }
     });
     lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-    
-    // FID observer
-    const fidObserver = new PerformanceObserver((entryList) => {
-      const entries = entryList.getEntries();
-      entries.forEach(entry => {
-        const delay = (entry as any).processingStart - entry.startTime;
-        console.log('FID:', delay);
-      });
+  } catch (e) {
+    console.warn('LCP monitoring failed:', e);
+  }
+
+  // Monitor FID (First Input Delay)
+  try {
+    const fidObserver = new PerformanceObserver((entries) => {
+      const fidEntry = entries.getEntries()[0];
+      if (fidEntry) {
+        const fid = fidEntry.processingStart - fidEntry.startTime;
+        metrics.fid = fid;
+        console.log(`FID: ${fid}ms`);
+      }
     });
     fidObserver.observe({ type: 'first-input', buffered: true });
+  } catch (e) {
+    console.warn('FID monitoring failed:', e);
+  }
+
+  // Monitor CLS (Cumulative Layout Shift)
+  try {
+    let clsValue = 0;
+    let clsEntries: PerformanceEntry[] = [];
     
-    // CLS observer
-    const clsObserver = new PerformanceObserver((entryList) => {
-      let clsValue = 0;
-      const entries = entryList.getEntries();
-      
-      entries.forEach(entry => {
+    const clsObserver = new PerformanceObserver((entries) => {
+      for (const entry of entries.getEntries()) {
+        // Only count layout shifts without recent user input
         if (!(entry as any).hadRecentInput) {
-          clsValue += (entry as any).value;
+          const currentEntry = entry as any;
+          clsValue += currentEntry.value;
+          clsEntries.push(currentEntry);
         }
-      });
+      }
       
       console.log('CLS:', clsValue);
+      metrics.cls = clsValue;
     });
+    
     clsObserver.observe({ type: 'layout-shift', buffered: true });
-  } catch (error) {
-    console.error('Error setting up performance observers:', error);
+  } catch (e) {
+    console.warn('CLS monitoring failed:', e);
+  }
+
+  // Track page load time
+  window.addEventListener('load', () => {
+    if (performance && performance.timing) {
+      const { navigationStart, loadEventEnd } = performance.timing;
+      const loadTime = loadEventEnd - navigationStart;
+      metrics.loadTime = loadTime;
+      console.log(`Page load time: ${loadTime}ms`);
+    }
+  });
+
+  // Track JS bundle load and execution time
+  if (performance && performance.getEntriesByType) {
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const scripts = performance.getEntriesByType('resource')
+          .filter(resource => resource.initiatorType === 'script')
+          .map(entry => ({
+            name: entry.name.split('/').pop() || entry.name,
+            duration: entry.duration,
+            size: entry.transferSize,
+          }));
+
+        console.log('[Bundle Metrics] main-bundle:', {
+          loadTime: scripts[0]?.duration || 0,
+          executionTime: performance.now(),
+          size: scripts[0]?.size || null,
+          timestamp: Date.now()
+        });
+      }, 0);
+    });
+  }
+
+  // Report long tasks
+  try {
+    const longTaskObserver = new PerformanceObserver((entries) => {
+      entries.getEntries().forEach(entry => {
+        console.warn(`Long task detected: ${entry.duration.toFixed(2)}ms`);
+      });
+    });
+    longTaskObserver.observe({ type: 'longtask', buffered: true });
+  } catch (e) {
+    console.warn('Long task monitoring failed:', e);
+  }
+
+  // Track slow resource loads
+  try {
+    const resourceObserver = new PerformanceObserver((entries) => {
+      entries.getEntries().forEach(entry => {
+        if (entry.duration > 1000) { // Threshold of 1000ms (1s)
+          console.warn(`Slow resource load: ${entry.name} (${entry.duration.toFixed(0)}ms)`);
+        }
+      });
+    });
+    resourceObserver.observe({ type: 'resource', buffered: true });
+  } catch (e) {
+    console.warn('Resource monitoring failed:', e);
   }
 }
 
 /**
- * Initialize all performance optimizations
- * Call this function once in your app's entry point
+ * Get the current performance metrics
  */
-export function initializePerformanceOptimizations() {
-  if (typeof window === 'undefined') return;
-  
-  // Wait for page to be fully loaded
-  if (document.readyState === 'complete') {
-    performOptimizations();
-  } else {
-    window.addEventListener('load', performOptimizations);
-  }
-  
-  function performOptimizations() {
-    // Add lazy loading to images
-    setupLazyLoading();
-    
-    // Optimize images to prevent CLS
-    optimizeImages();
-    
-    // Defer non-critical operations
-    deferNonCritical(() => {
-      // Add analytics, non-essential scripts, etc. here
-      monitorWebVitals();
-    });
-    
-    // Preload hero image for better LCP
-    if (window.location.pathname === '/' || window.location.pathname === '/home') {
-      preloadCriticalResources(['/hero-image.jpg'], 'image');
-    }
-  }
+export function getPerformanceMetrics(): PerformanceMetrics {
+  return { ...metrics };
+}
+
+/**
+ * Report performance metrics to an analytics service
+ * This is a placeholder for future implementation
+ */
+export function reportPerformanceMetrics(): void {
+  // In the future, this could send metrics to an analytics service
+  console.log('Performance metrics:', metrics);
 }

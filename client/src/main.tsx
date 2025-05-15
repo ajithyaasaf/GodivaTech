@@ -11,12 +11,29 @@ import { useBrowserLocation } from "./lib/wouter-config";
 import "./lib/firebase";
 // Import Firestore without sample data initialization
 import "@/lib/firestore";
-// Using the performance optimization library instead of individual optimizers
-import { initializePerformanceOptimizations } from "@/lib/performance";
+// Performance monitoring
+import { initPerformanceMonitoring } from "./lib/performance";
 
-// Apply all performance optimizations
+// Initialize performance monitoring
 if (typeof window !== 'undefined') {
-  initializePerformanceOptimizations();
+  // Start monitoring performance metrics
+  initPerformanceMonitoring();
+  
+  // Preload critical resources
+  const preloadLinks = [
+    { rel: 'preload', href: '/fonts/Inter-var.woff2', as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' },
+    { rel: 'preload', href: '/api/services', as: 'fetch', crossOrigin: 'anonymous' },
+    { rel: 'preload', href: '/api/blog-posts', as: 'fetch', crossOrigin: 'anonymous' },
+  ];
+  
+  // Add preload links to head
+  preloadLinks.forEach(attrs => {
+    const link = document.createElement('link');
+    Object.entries(attrs).forEach(([key, value]) => {
+      link.setAttribute(key, value as string);
+    });
+    document.head.appendChild(link);
+  });
 }
 
 // Sample data initialization removed for production
