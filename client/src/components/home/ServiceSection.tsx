@@ -6,6 +6,16 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useAnimateOnScroll, slideInUpVariants } from "@/hooks/use-animation";
 import ParallaxSection from "@/components/ui/ParallaxSection";
 
+// Icon mapping for string-based icons from API
+const iconMap: Record<string, React.ElementType> = {
+  code: Code,
+  cloud: Cloud,
+  users: Users,
+  shield: Shield,
+  "bar-chart": BarChart,
+  brain: BrainCircuit,
+};
+
 const ServiceCard = ({ icon: Icon, title, description, slug }: { 
   icon: React.ElementType, 
   title: string, 
@@ -45,7 +55,7 @@ interface ServiceType {
   id: number;
   title: string;
   description: string;
-  icon?: React.ElementType;
+  icon?: React.ElementType | string;
   slug: string;
 }
 
@@ -179,26 +189,33 @@ const ServiceSection = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayServices.map((service: ServiceType, index: number) => (
-            <motion.div
-              key={service.id || index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ 
-                duration: 0.5, 
-                delay: 0.1 * index,
-                ease: "easeOut"
-              }}
-            >
-              <ServiceCard 
-                icon={service.icon || Code}
-                title={service.title}
-                description={service.description}
-                slug={service.slug}
-              />
-            </motion.div>
-          ))}
+          {displayServices.map((service: ServiceType, index: number) => {
+            // Handle both string and component icons
+            const iconComponent: React.ElementType = typeof service.icon === 'string' 
+              ? iconMap[service.icon] || Code
+              : service.icon || Code;
+              
+            return (
+              <motion.div
+                key={service.id || index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: 0.1 * index,
+                  ease: "easeOut"
+                }}
+              >
+                <ServiceCard 
+                  icon={iconComponent}
+                  title={service.title}
+                  description={service.description}
+                  slug={service.slug}
+                />
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
