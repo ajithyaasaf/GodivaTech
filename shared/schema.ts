@@ -6,11 +6,13 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
+  name: text("name"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  name: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -60,6 +62,27 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type BlogPost = typeof blogPosts.$inferSelect;
 
+// Extended BlogPost type that includes category information
+export interface ExtendedBlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  published: boolean;
+  authorName: string;
+  authorImage: string | null;
+  coverImage: string | null;
+  // publishedAt can be Date or string since it might come from API as string
+  publishedAt: string | Date;
+  categoryId: number | null;
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+}
+
 export const testimonials = pgTable("testimonials", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -84,19 +107,41 @@ export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description").notNull(),
+  fullDescription: text("full_description"), // Detailed project description
   image: text("image"),
+  gallery: text("gallery").array(), // Additional images for project gallery
   category: text("category").notNull(),
   technologies: text("technologies").array().notNull(),
   link: text("link"),
+  githubLink: text("github_link"), // Link to GitHub repository
+  clientName: text("client_name"), // Client or company name
+  completionDate: text("completion_date"), // When the project was completed
+  featured: boolean("featured").default(false), // Whether to show as featured project
+  testimonial: text("testimonial"), // Client testimonial about the project
+  challengeDescription: text("challenge_description"), // Description of challenges faced
+  solutionDescription: text("solution_description"), // Description of solutions implemented
+  resultsDescription: text("results_description"), // Description of results achieved
+  order: integer("order").default(0), // For manual ordering of projects
 });
 
 export const insertProjectSchema = createInsertSchema(projects).pick({
   title: true,
   description: true,
+  fullDescription: true,
   image: true,
+  gallery: true,
   category: true,
   technologies: true,
   link: true,
+  githubLink: true,
+  clientName: true,
+  completionDate: true,
+  featured: true,
+  testimonial: true,
+  challengeDescription: true,
+  solutionDescription: true,
+  resultsDescription: true,
+  order: true,
 });
 
 export type InsertProject = z.infer<typeof insertProjectSchema>;

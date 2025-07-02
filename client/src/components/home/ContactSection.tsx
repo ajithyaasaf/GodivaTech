@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { MapPinIcon, PhoneIcon, MailIcon, ClockIcon, LinkedinIcon, TwitterIcon, FacebookIcon, InstagramIcon } from "lucide-react";
+import { trackEvent, trackFormSubmission } from "@/lib/analytics";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -31,12 +32,29 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Track form interaction event
+    trackEvent('contact_form_submit_attempt', 'engagement', 'Contact Form');
+    
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
         variant: "destructive",
       });
+      
+      // Track validation error for SEO form optimization
+      trackEvent(
+        'form_validation_error', 
+        'engagement', 
+        'Contact Form',
+        undefined,
+        false,
+        { 
+          form_type: 'contact',
+          error_type: 'missing_required_fields' 
+        }
+      );
+      
       return;
     }
 
@@ -46,6 +64,20 @@ const ContactSection = () => {
         description: "Please agree to the privacy policy",
         variant: "destructive",
       });
+      
+      // Track privacy policy error
+      trackEvent(
+        'form_validation_error', 
+        'engagement', 
+        'Contact Form',
+        undefined,
+        false,
+        { 
+          form_type: 'contact',
+          error_type: 'privacy_policy_not_accepted' 
+        }
+      );
+      
       return;
     }
 
@@ -65,6 +97,23 @@ const ContactSection = () => {
         description: "Your message has been sent. We'll get back to you soon!",
       });
       
+      // Track successful form submission for conversion tracking
+      trackFormSubmission('contact_form', true);
+      
+      // Track additional conversion details for SEO analysis
+      trackEvent(
+        'lead_generated', 
+        'conversion', 
+        formData.subject,
+        undefined,
+        false,
+        { 
+          lead_type: 'contact_form',
+          lead_source: window.location.pathname,
+          lead_subject: formData.subject
+        }
+      );
+      
       setFormData({
         name: "",
         email: "",
@@ -79,6 +128,19 @@ const ContactSection = () => {
         description: "Failed to send message. Please try again later.",
         variant: "destructive",
       });
+      
+      // Track form submission failure
+      trackFormSubmission('contact_form', false);
+      
+      // Track error for debugging and optimization
+      trackEvent(
+        'form_submission_error',
+        'error',
+        'Contact Form',
+        undefined,
+        false,
+        { error_type: 'api_failure' }
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -107,9 +169,9 @@ const ContactSection = () => {
                   <div>
                     <p className="font-medium text-neutral-800 mb-1">Our Office</p>
                     <p className="text-neutral-600">
-                      123 Tech Center Blvd<br />
-                      Suite 500<br />
-                      San Francisco, CA 94103
+                      261, Vaigai Mainroad 4th Street<br />
+                      Sri Nagar, Iyer Bungalow<br />
+                      Madurai 625007, India
                     </p>
                   </div>
                 </div>
@@ -120,7 +182,7 @@ const ContactSection = () => {
                   </div>
                   <div>
                     <p className="font-medium text-neutral-800 mb-1">Phone</p>
-                    <p className="text-neutral-600">(123) 456-7890</p>
+                    <p className="text-neutral-600">+91 96005 20130</p>
                   </div>
                 </div>
 
@@ -242,7 +304,7 @@ const ContactSection = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full py-3 px-4 rounded-md border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    placeholder="(123) 456-7890"
+                    placeholder="+91 96005 20130"
                   />
                 </div>
 

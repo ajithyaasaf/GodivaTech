@@ -1,222 +1,239 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Link } from "wouter";
-import { ChevronRight, Code, Cloud, Users, Shield, BarChart, BrainCircuit } from "lucide-react";
+import { 
+  Globe, Megaphone, Smartphone, PenTool, Layout, Palette, 
+  ArrowRight, Star, CheckCircle 
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useAnimateOnScroll, slideInUpVariants } from "@/hooks/use-animation";
-import ParallaxSection from "@/components/ui/ParallaxSection";
 
-// Icon mapping for string-based icons from API
-const iconMap: Record<string, React.ElementType> = {
-  code: Code,
-  cloud: Cloud,
-  users: Users,
-  shield: Shield,
-  "bar-chart": BarChart,
-  brain: BrainCircuit,
-};
-
-const ServiceCard = ({ icon: Icon, title, description, slug }: { 
-  icon: React.ElementType, 
-  title: string, 
-  description: string,
-  slug: string
-}) => {
-  const [ref, controls] = useAnimateOnScroll(0.1);
-  
-  return (
-    <motion.div 
-      ref={ref}
-      initial="hidden"
-      animate={controls}
-      variants={slideInUpVariants}
-      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
-    >
-      <div className="p-8">
-        <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
-          {Icon && <Icon className="text-2xl text-primary h-6 w-6" />}
-        </div>
-        <h3 className="text-xl font-semibold text-neutral-800 mb-3">{title}</h3>
-        <p className="text-neutral-600 mb-6">
-          {description}
-        </p>
-        <Link 
-          href={`/services/${slug}`} 
-          className="text-primary font-medium hover:text-primary/90 transition duration-150 flex items-center"
-        >
-          Learn More <ChevronRight className="ml-2 h-4 w-4" />
-        </Link>
-      </div>
-    </motion.div>
-  );
-};
-
-interface ServiceType {
+// Simple service interface
+interface Service {
   id: number;
   title: string;
   description: string;
-  icon?: React.ElementType | string;
+  icon: React.ElementType;
+  slug: string;
+  features?: string[];
+}
+
+// API service interface (from backend)
+interface ApiService {
+  id: number;
+  title: string;
+  description: string;
+  icon?: string;
   slug: string;
 }
 
-const ServiceSection = () => {
-  const { data: services = [] } = useQuery<ServiceType[]>({
+// Modern service card component
+const ServiceCard: React.FC<{ service: Service; index: number }> = ({ service, index }) => {
+  const IconComponent = service.icon;
+  
+  return (
+    <div className="group relative">
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl 
+                      opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+      
+      {/* Main card */}
+      <div className="relative bg-white rounded-2xl shadow-lg border border-gray-100 p-8 
+                      group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-300">
+        
+        {/* Icon section */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl 
+                          flex items-center justify-center shadow-lg">
+            <IconComponent className="w-8 h-8 text-white" />
+          </div>
+          <div className="text-right">
+            <div className="flex items-center text-amber-500 mb-1">
+              <Star className="w-4 h-4 fill-current" />
+              <Star className="w-4 h-4 fill-current" />
+              <Star className="w-4 h-4 fill-current" />
+              <Star className="w-4 h-4 fill-current" />
+              <Star className="w-4 h-4 fill-current" />
+            </div>
+            <span className="text-sm text-gray-500">Top Rated</span>
+          </div>
+        </div>
+        
+        {/* Content */}
+        <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors">
+          {service.title}
+        </h3>
+        
+        <p className="text-gray-600 mb-6 leading-relaxed">
+          {service.description}
+        </p>
+        
+        {/* Features list */}
+        <div className="space-y-2 mb-6">
+          {(service.features || ["Professional Service", "Quick Delivery", "24/7 Support"]).map((feature, idx) => (
+            <div key={idx} className="flex items-center text-sm text-gray-600">
+              <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+              {feature}
+            </div>
+          ))}
+        </div>
+        
+        {/* CTA Button */}
+        <Link href={`/services/${service.slug}`}>
+          <button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white 
+                           py-3 px-6 rounded-xl font-semibold group-hover:from-blue-600 
+                           group-hover:to-indigo-700 transition-all duration-300 
+                           flex items-center justify-center">
+            Learn More
+            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+// Icon mapping function
+const getIconComponent = (iconName?: string): React.ElementType => {
+  if (!iconName) return Globe;
+  
+  const iconMap: Record<string, React.ElementType> = {
+    'globe': Globe,
+    'megaphone': Megaphone,
+    'smartphone': Smartphone,
+    'pentool': PenTool,
+    'layout': Layout,
+    'palette': Palette,
+  };
+  
+  return iconMap[iconName.toLowerCase()] || Globe;
+};
+
+// Main services section component
+const ServiceSection: React.FC = () => {
+  // Fetch services from API
+  const { data: apiServices = [] } = useQuery<ApiService[]>({
     queryKey: ['/api/services'],
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Use predefined services if API doesn't return data
-  const defaultServices: ServiceType[] = [
+  // Default services with features
+  const defaultServices: Service[] = [
     {
       id: 1,
-      title: "Software Development",
-      description: "Custom software solutions tailored to your business needs, from web applications to mobile apps and enterprise systems.",
-      icon: Code,
-      slug: "software-development"
+      title: "Web Development",
+      description: "Create affordable, responsive websites for your business that work on all devices and help your brand stand out online.",
+      icon: Globe,
+      slug: "web-development",
+      features: ["Responsive Design", "SEO Optimized", "Fast Loading", "Mobile Friendly"]
     },
     {
       id: 2,
-      title: "Cloud Solutions",
-      description: "Scalable cloud infrastructure, migration services, and managed cloud solutions to optimize your business operations.",
-      icon: Cloud,
-      slug: "cloud-solutions"
+      title: "Digital Marketing",
+      description: "Boost your online presence with our comprehensive digital marketing strategies including SEO, social media management, and online advertising.",
+      icon: Megaphone,
+      slug: "digital-marketing",
+      features: ["SEO Strategy", "Social Media", "Google Ads", "Analytics"]
     },
     {
       id: 3,
-      title: "IT Consulting",
-      description: "Strategic technology advisory services to help you make informed decisions and maximize your IT investments.",
-      icon: Users,
-      slug: "it-consulting"
+      title: "Mobile App Development",
+      description: "Build custom mobile applications for Android and iOS platforms that connect you with your customers wherever they are.",
+      icon: Smartphone,
+      slug: "app-development",
+      features: ["iOS & Android", "Native Performance", "App Store Ready", "Cloud Integration"]
     },
     {
       id: 4,
-      title: "Cybersecurity",
-      description: "Comprehensive security assessments, implementation, and monitoring to protect your business from evolving threats.",
-      icon: Shield,
-      slug: "cybersecurity"
+      title: "Poster Design",
+      description: "Craft eye-catching posters and marketing materials that effectively communicate your message and attract customer attention.",
+      icon: PenTool,
+      slug: "poster-design",
+      features: ["Creative Design", "Print Ready", "Multiple Formats", "Quick Turnaround"]
     },
     {
       id: 5,
-      title: "Data Analytics",
-      description: "Turn your data into actionable insights with our advanced analytics, business intelligence, and data visualization solutions.",
-      icon: BarChart,
-      slug: "data-analytics"
+      title: "UI/UX Design",
+      description: "Create intuitive and engaging user interfaces that provide exceptional user experiences and keep customers coming back.",
+      icon: Layout,
+      slug: "ui-ux-design",
+      features: ["User Research", "Wireframing", "Prototyping", "User Testing"]
     },
     {
       id: 6,
-      title: "AI & Machine Learning",
-      description: "Cutting-edge AI solutions that automate processes, predict trends, and enhance decision-making for your business.",
-      icon: BrainCircuit,
-      slug: "ai-machine-learning"
+      title: "Logo & Brand Design",
+      description: "Develop a distinctive visual identity with professional logo design and comprehensive branding that communicates your company values.",
+      icon: Palette,
+      slug: "logo-brand-design",
+      features: ["Logo Design", "Brand Guidelines", "Color Palette", "Typography"]
     }
   ];
 
-  const displayServices: ServiceType[] = services.length > 0 ? services : defaultServices;
-
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
+  // Convert API services to Service format
+  const convertApiToService = (apiService: ApiService): Service => ({
+    ...apiService,
+    icon: getIconComponent(apiService.icon),
+    features: ["Professional Service", "Quick Delivery", "24/7 Support"] // Default features for API services
   });
-  
-  // Create different parallax effects for background elements
-  const leftCircleY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const rightCircleY = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"]);
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.3], [0, 1, 1]);
-  const titleY = useTransform(scrollYProgress, [0, 0.2, 1], ["50px", "0px", "0px"]);
-  
-  return (
-    <section 
-      id="services" 
-      ref={sectionRef}
-      className="py-20 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e8ee 100%)"
-      }}
-    >
-      {/* Decorative background elements with parallax effect */}
-      <motion.div 
-        className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-primary/5"
-        style={{ y: leftCircleY }}
-      />
-      <motion.div 
-        className="absolute bottom-20 -right-32 w-96 h-96 rounded-full bg-secondary/5"
-        style={{ y: rightCircleY }}
-      />
-      <motion.div 
-        className="absolute top-40 right-10 w-20 h-20 rounded-lg rotate-12 bg-primary/5"
-        style={{ 
-          rotate: useTransform(scrollYProgress, [0, 1], ["12deg", "45deg"]),
-          scale: useTransform(scrollYProgress, [0, 1], [1, 1.2])
-        }}
-      />
-      <motion.div 
-        className="absolute bottom-10 left-10 w-32 h-32 rounded-full bg-secondary/5"
-        style={{ 
-          scale: useTransform(scrollYProgress, [0, 1], [1, 1.5]),
-          x: useTransform(scrollYProgress, [0, 1], ["0px", "100px"])
-        }}
-      />
-      
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div 
-          className="text-center mb-16"
-          style={{ 
-            opacity: titleOpacity,
-            y: titleY 
-          }}
-        >
-          <motion.h2 
-            className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4"
-            whileInView={{ 
-              opacity: [0, 1],
-              y: [-20, 0] 
-            }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            Our Services
-          </motion.h2>
-          <motion.p 
-            className="text-lg text-neutral-600 max-w-2xl mx-auto"
-            whileInView={{ 
-              opacity: [0, 1]
-            }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
-            We offer comprehensive technology solutions to help your business thrive in the digital landscape.
-          </motion.p>
-        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayServices.map((service: ServiceType, index: number) => {
-            // Handle both string and component icons
-            const iconComponent: React.ElementType = typeof service.icon === 'string' 
-              ? iconMap[service.icon] || Code
-              : service.icon || Code;
-              
-            return (
-              <motion.div
-                key={service.id || index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: 0.1 * index,
-                  ease: "easeOut"
-                }}
-              >
-                <ServiceCard 
-                  icon={iconComponent}
-                  title={service.title}
-                  description={service.description}
-                  slug={service.slug}
-                />
-              </motion.div>
-            );
-          })}
+  // Use API services if available, otherwise use defaults
+  const services: Service[] = apiServices.length > 0 
+    ? apiServices.map(convertApiToService)
+    : defaultServices;
+
+  return (
+    <section className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className="container mx-auto px-4">
+        
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="inline-block mb-4">
+            <span className="bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold">
+              OUR SERVICES
+            </span>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
+            Professional <span className="text-blue-600">IT Solutions</span> for Your Business
+          </h2>
+          
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            From web development to digital marketing, we provide comprehensive technology services 
+            to help businesses in Madurai establish a strong online presence.
+          </p>
         </div>
+
+        {/* Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {services.map((service: Service, index: number) => (
+            <ServiceCard key={service.id} service={service} index={index} />
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center">
+          <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              Ready to Get Started?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Let's discuss your project and see how we can help bring your ideas to life.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact">
+                <button className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold 
+                                 hover:bg-blue-700 transition-colors">
+                  Start Your Project
+                </button>
+              </Link>
+              <Link href="/portfolio">
+                <button className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-xl 
+                                 font-semibold hover:bg-blue-50 transition-colors">
+                  View Our Work
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

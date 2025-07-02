@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import workspaceImage from "../../assets/modern-workspace.jpeg";
+import { safeImageProps } from "@/lib/dom-elements-safe";
 
 const AboutSection = () => {
   return (
@@ -8,45 +10,54 @@ const AboutSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <div className="w-full lg:w-1/2">
-            <img 
-              src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" 
-              alt="GodivaTech Team" 
-              className="rounded-lg shadow-xl w-full" 
-            />
+            <div className="relative">
+              <img 
+                {...safeImageProps({
+                  src: workspaceImage,
+                  alt: "Modern Workspace at GodivaTech",
+                  className: "rounded-lg shadow-xl w-full object-cover h-[400px]",
+                  loading: "lazy",
+                  decoding: "async"
+                })}
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 rounded-b-lg">
+                <p className="text-white font-semibold text-lg">Modern Workspace</p>
+                <p className="text-white/90 text-sm">GodivaTech Office</p>
+              </div>
+            </div>
           </div>
           <div className="w-full lg:w-1/2">
             <h2 className="text-3xl font-bold text-neutral-800 mb-6">
-              Empowering businesses through innovative technology
+              Expert IT Solutions & Digital Services in Madurai
             </h2>
             <p className="text-lg text-neutral-600 mb-6">
-              GodivaTech was founded in 2010 with a clear mission: to help businesses harness the power of technology to achieve their goals. Over the years, we've grown from a small team of passionate developers to a full-service technology partner trusted by businesses worldwide.
+              At Godiva Tech, we provide a range of digital marketing services in Madurai, including web development, mobile app development, UI/UX design, poster design, and marketing strategies.
             </p>
             <p className="text-lg text-neutral-600 mb-8">
-              Our team of experts combines technical expertise with business acumen to deliver solutions that drive real-world results. We believe in building long-term partnerships with our clients, becoming an extension of their team and a trusted advisor in their digital journey.
+              We work with businesses to create user-friendly websites, develop cross-platform mobile apps, design engaging interfaces, and craft eye-catching posters. Our goal is to help your brand stand out online and achieve growth through effective and innovative solutions.
             </p>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-8">
               <div className="text-center">
-                <p className="text-4xl font-bold text-primary mb-2">12+</p>
-                <p className="text-neutral-600">Years Experience</p>
+                <p className="text-4xl font-bold text-primary mb-2">13+</p>
+                <p className="text-neutral-600">Years of Experience</p>
+                <p className="text-sm text-neutral-500 mt-1">Delivering quality IT solutions since 2010</p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-bold text-primary mb-2">200+</p>
-                <p className="text-neutral-600">Projects Completed</p>
+                <p className="text-4xl font-bold text-primary mb-2">150+</p>
+                <p className="text-neutral-600">Successfully Completed Projects</p>
+                <p className="text-sm text-neutral-500 mt-1">Web development, marketing & design projects</p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-bold text-primary mb-2">50+</p>
-                <p className="text-neutral-600">Tech Experts</p>
-              </div>
-              <div className="text-center">
-                <p className="text-4xl font-bold text-primary mb-2">98%</p>
-                <p className="text-neutral-600">Client Satisfaction</p>
+                <p className="text-4xl font-bold text-primary mb-2">120+</p>
+                <p className="text-neutral-600">Satisfied Happy Clients</p>
+                <p className="text-sm text-neutral-500 mt-1">From businesses in Madurai and beyond</p>
               </div>
             </div>
             
             <Button asChild className="bg-primary hover:bg-primary/90">
               <Link href="/about">
-                Learn More About Us
+                More About
               </Link>
             </Button>
           </div>

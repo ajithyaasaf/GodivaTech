@@ -1,8 +1,12 @@
-import type { Config } from "tailwindcss";
-
+/** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
-  content: ["./client/index.html", "./client/src/**/*.{js,jsx,ts,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./client/index.html",
+    "./client/src/**/*.{js,jsx,ts,tsx}"
+  ],
   theme: {
     extend: {
       borderRadius: {
@@ -64,27 +68,71 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-20px)" },
+        },
+        "float-reverse": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(20px)" },
+        },
+        "float-blob": {
+          "0%, 100%": { 
+            transform: "translateY(0) scale(1)", 
+            opacity: "0.1" 
           },
-          to: {
-            height: "0",
+          "50%": { 
+            transform: "translateY(-15px) scale(1.05)", 
+            opacity: "0.15" 
           },
+        },
+        "pulse-slow": {
+          "0%, 100%": { 
+            transform: "scale(1)", 
+            opacity: "0.5" 
+          },
+          "50%": { 
+            transform: "scale(1.05)", 
+            opacity: "0.7" 
+          },
+        },
+        "gleam": {
+          "0%, 100%": { opacity: "0" },
+          "50%": { opacity: "0.2" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" }
+        },
+        "slide-in": {
+          "0%": { transform: "translateX(20px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" }
+        },
+        "slide-pattern": {
+          "0%": { backgroundPosition: "0% 0%" },
+          "100%": { backgroundPosition: "100% 100%" }
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float-slow": "float-slow 20s ease-in-out infinite",
+        "float-reverse": "float-reverse 25s ease-in-out infinite",
+        "float-blob": "float-blob 8s ease-in-out infinite",
+        "pulse-slow": "pulse-slow 8s ease-in-out infinite",
+        "gleam": "gleam 10s ease-in-out infinite",
+        "fade-in": "fade-in 0.5s ease-out",
+        "slide-in": "slide-in 0.5s ease-out",
+        "slide-pattern": "slide-pattern 20s ease-in-out infinite alternate",
       },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-} satisfies Config;
+};
