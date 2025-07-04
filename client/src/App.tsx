@@ -11,6 +11,7 @@ import { trackLongTasks, preloadCriticalResources } from "@/lib/performance";
 import LCPOptimizer from "@/components/performance/LCPOptimizer";
 import FontOptimizer from "@/components/performance/FontOptimizer";
 import CriticalCSSOptimizer from "@/components/performance/CriticalCSSOptimizer";
+import { FastLoadingOptimizer, CriticalCSSInliner, PerformanceTracker } from "@/components/FastLoadingOptimizer";
 import { usePageHistory } from "@/hooks/use-page-history";
 import { initializePerformanceOptimizations } from "@/lib/performance";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -153,14 +154,20 @@ function App() {
 
   return (
     <AuthProvider>
-      {/* Add resource hints for performance optimization */}
-      <ResourceHints />
+      {/* Critical performance optimizations */}
+      <CriticalCSSInliner />
+      <PerformanceTracker />
       
-      {/* Performance optimization components - CriticalCSSOptimizer temporarily removed to fix colors */}
-      <LCPOptimizer />
-      
-      {/* Performance monitoring tool - only visible in development */}
-      {import.meta.env.DEV && <PerformanceMonitor />}
+      {/* Fast loading wrapper for improved perceived performance */}
+      <FastLoadingOptimizer>
+        {/* Add resource hints for performance optimization */}
+        <ResourceHints />
+        
+        {/* Performance optimization components */}
+        <LCPOptimizer />
+        
+        {/* Performance monitoring tool - only visible in development */}
+        {import.meta.env.DEV && <PerformanceMonitor />}
 
       {!isAdminRoute && (
         <Layout>
@@ -230,6 +237,7 @@ function App() {
           </Switch>
         </Suspense>
       )}
+      </FastLoadingOptimizer>
     </AuthProvider>
   );
 }

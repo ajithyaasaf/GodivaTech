@@ -205,20 +205,23 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: getQueryFn({ on401: "throw" }),
-      // Fine-tuned caching behavior
-      staleTime: 1000 * 60 * 5, // 5 minutes before data is considered stale
-      gcTime: 1000 * 60 * 30, // 30 minutes before unused data is garbage collected
-      // Only refetch when window is focused if data is stale
-      refetchOnWindowFocus: true,
-      // Retry 3 times with exponential backoff if a query fails
-      retry: 3,
-      retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
+      // Aggressive caching for better performance
+      staleTime: 1000 * 60 * 10, // 10 minutes before data is considered stale
+      gcTime: 1000 * 60 * 60, // 1 hour before unused data is garbage collected
+      // Reduce refetching to improve performance
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      // Retry with faster timeout for better UX
+      retry: 2,
+      retryDelay: attemptIndex => Math.min(500 * 2 ** attemptIndex, 10000),
       // Reduce unnecessary refetches
       refetchInterval: false,
-      // Add structured keys for better cache management
+      // Optimize for better cache sharing
       structuralSharing: true,
-      // Prevent refetch on component mount if data is fresh
-      refetchOnMount: true,
+      // Only refetch on mount if data is truly stale
+      refetchOnMount: false,
+      // Add network idle optimization
+      networkMode: 'online',
     },
     mutations: {
       // Don't retry mutations to prevent duplicate writes
