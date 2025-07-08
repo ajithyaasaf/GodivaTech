@@ -22,7 +22,12 @@ export const locationKeywords = {
     branding: ["Anna Nagar", "K.K. Nagar", "Mattuthavani"],
     software: ["Iyer Bungalow", "Gomathipuram", "Nagamalai Pudukottai"]
   },
-  nearbyLocations: ["Tiruchirappalli", "Coimbatore", "Salem", "Tirunelveli", "Erode"],
+  nearbyLocations: [
+    // Immediate surrounding areas (within 50km)
+    "Sivaganga", "Ramanathapuram", "Manamadurai", "Dindigul", "Virudhunagar",
+    // Major Tamil Nadu cities  
+    "Tiruchirappalli", "Coimbatore", "Salem", "Tirunelveli", "Erode"
+  ],
   landmarks: ["Meenakshi Amman Temple", "Gandhi Museum", "Thirumalai Nayak Palace"]
 };
 
