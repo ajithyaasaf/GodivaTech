@@ -299,6 +299,14 @@ Changelog:
   - **Production API Configuration**: Updated environment config to use correct Render backend URL
   - **Security Headers Added**: Implemented proper security headers and caching strategies
   - **SOLUTION IMPLEMENTED**: All non-API routes now properly fallback to index.html for client-side routing
+- July 8, 2025. URL MISMATCH CRITICAL FIX - Resolved Google search result 404 errors:
+  - **Problem Identified**: Google indexed old URLs (/about-us/, /portfolio/logo-design/) that don't exist in current site structure
+  - **301 Redirects Implemented**: Added permanent redirects in vercel.json for URL mismatches
+  - **Comprehensive Coverage**: Updated all redirect configuration files (_redirects, public/_redirects)
+  - **Root Cause Analysis**: Website migration/redesign changed URL structure without proper redirect planning
+  - **Prevention Strategy**: Created URL health monitoring script and documentation for future URL management
+  - **SEO Preservation**: 301 redirects maintain Google rankings while fixing user experience
+  - **VERIFIED SOLUTION**: /about-us now redirects to /about, /portfolio/logo-design redirects to /portfolio
 
 ## User Preferences
 
