@@ -33,8 +33,8 @@ export const API_CONFIG = {
     
     // In production, always use the full backend URL
     if (isProd) {
-      console.warn('No API URL configured in production! Using localhost fallback.');
-      return 'http://localhost:5000';
+      console.warn('No API URL configured in production! Using Render backend URL.');
+      return 'https://godivatech-backend.onrender.com/api';
     }
     
     // In development, use relative URLs

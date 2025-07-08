@@ -29,4 +29,17 @@ export default defineConfig({
       },
     },
   },
+  // SPA fallback for development
+  preview: {
+    port: 3000,
+    host: "0.0.0.0",
+  },
+  server: {
+    port: 3000,
+    host: "0.0.0.0",
+    // Fallback to index.html for client-side routing
+    fs: {
+      strict: false,
+    },
+  },
 });
