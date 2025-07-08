@@ -2,10 +2,10 @@
 # API proxy to backend
 /api/* https://godivatech-backend.onrender.com/api/:splat 200
 
-# Dynamic service routes
+# Dynamic service routes (including location-based)
 /services/* /index.html 200
 
-# Dynamic blog routes  
+# Dynamic blog routes (including location-based)
 /blog/* /index.html 200
 
 # Admin routes
@@ -13,6 +13,9 @@
 
 # Auth route
 /auth /index.html 200
+
+# Sitemap route
+/sitemap /index.html 200
 
 # Static files should be served as-is
 /favicon.ico /favicon.ico 200

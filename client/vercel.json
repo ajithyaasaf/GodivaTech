@@ -14,11 +14,27 @@
       "destination": "/index.html"
     },
     {
+      "source": "/services/:slug/madurai",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/services/:slug/madurai/:neighborhood",
+      "destination": "/index.html"
+    },
+    {
       "source": "/blog/:slug",
       "destination": "/index.html"
     },
     {
       "source": "/blog/category/:categorySlug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog/category/:categorySlug/madurai",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog/category/:categorySlug/madurai/:neighborhood",
       "destination": "/index.html"
     },
     {
@@ -31,6 +47,10 @@
     },
     {
       "source": "/auth",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sitemap",
       "destination": "/index.html"
     },
     {
