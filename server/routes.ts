@@ -16,8 +16,12 @@ import {
 import { setupAuth, isAuthenticated } from "./auth";
 import { uploadImage, deleteImage } from "./cloudinary";
 import { setupEnhancedSitemaps } from "./sitemap-enhanced";
+import { seoRedirectMiddleware } from "./seo-redirect-middleware";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up SEO redirect middleware (must be first for proper URL handling)
+  app.use(seoRedirectMiddleware);
+  
   // Set up authentication
   setupAuth(app);
   
