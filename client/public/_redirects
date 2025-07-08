@@ -1,3 +1,9 @@
+# URL Redirects for Google Search Result Mismatches
+/about-us /about 301
+/about-us/ /about 301
+/portfolio/logo-design /portfolio 301
+/portfolio/logo-design/ /portfolio 301
+
 # Netlify/Vercel SPA fallback for client-side routing with comprehensive route handling
 # API proxy to backend
 /api/* https://godivatech-backend.onrender.com/api/:splat 200
